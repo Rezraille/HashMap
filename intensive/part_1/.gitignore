@@ -1,0 +1,27 @@
+# Скомпилированные классы
+*.class
+
+# Файлы логов
+*.log
+
+# IDE специфичные файлы
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+.vscode/
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+
+# Файлы окружения
+*.env
+*.properties
+
+# Исключения
+!LICENSE*
+!README*

@@ -32,9 +32,9 @@ public class MyHashMap<K, V>
     }
     public V put(K key, V value)
     {
-        int hashCode = key.hashCode();
-        int index = getIndexBucket(hashCode);
-        V val = buckets[index].put(hashCode, key, value);;
+        int hash = key == null ? 0 : key.hashCode();
+        int index = getIndexBucket(hash);
+        V val = buckets[index].put(hash, key, value);;
         if (size() > threshold || buckets[index].size() > LIMIT_SIZE_BUCKET)
         {
             rehashing();
@@ -44,23 +44,23 @@ public class MyHashMap<K, V>
 
     public V get(Object key)
     {
-        int hashCode = key.hashCode();
-        int index = getIndexBucket(hashCode);
-        return buckets[index].get(hashCode, key);
+        int hash = key == null ? 0 : key.hashCode();
+        int index = getIndexBucket(hash);
+        return buckets[index].get(hash, key);
     }
 
     public V remove(Object key)
     {
-        int hashCode = key.hashCode();
-        int index = getIndexBucket(hashCode);
-        return buckets[index].remove(hashCode, key);
+        int hash = key == null ? 0 : key.hashCode();
+        int index = getIndexBucket(hash);
+        return buckets[index].remove(hash, key);
     }
 
     public boolean remove(Object key, Object value)
     {
-        int hashCode = key.hashCode();
-        int index = getIndexBucket(hashCode);
-        return buckets[index].remove(hashCode, key, value);
+        int hash = key == null ? 0 : key.hashCode();
+        int index = getIndexBucket(hash);
+        return buckets[index].remove(hash, key, value);
     }
 
     public int size()
@@ -136,10 +136,12 @@ public class MyHashMap<K, V>
 
         for (int i = 0; i < oldBuckets.length; i++)
         {
-            Node<K,V> current = oldBuckets[i].getHead();
+            Bucket.Node<K,V> current = oldBuckets[i].getHead();
             while (current != null)
             {
-                put(current.getKey(), current.getValue());
+                int hash = current.getHash();
+                int index = getIndexBucket(hash);
+                this.buckets[index].putNew(current);
                 current = current.getNext();
             }
         }

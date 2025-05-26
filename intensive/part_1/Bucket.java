@@ -12,21 +12,24 @@ class Bucket<K, V>
 
     protected V put(int hash, K key, V value)
     {
-        Node<K, V> insideNode = getMatchNode(hash, key);
+        Node<K, V> inside = getMatchNode(hash, key);
         V oldValue = null;
-        if (insideNode == null)
+        if (inside == null)
         {
-            Node<K, V> outsideNode = new Node<>(hash, key, value, null);
-            link(outsideNode, head);
-            size++;
+            Node<K, V> outside = new Node<>(hash, key, value, null);
+            makePut(outside);
         } else
         {
-            oldValue = insideNode.getValue();
-            insideNode.setValue(value);
+            oldValue = inside.getValue();
+            inside.setValue(value);
         }
         return oldValue;
     }
 
+    protected void putNew(Node<K,V> node)
+    {
+        makePut(new Node<>(node.getHash(), node.getKey(), node.getValue(), null));
+    }
 
     protected V get(int hash, Object key)
     {
@@ -89,6 +92,12 @@ class Bucket<K, V>
             current = current.getNext();
         }
         return null;
+    }
+
+    private void makePut(Node<K, V> outside)
+    {
+        link(outside, head);
+        size++;
     }
 
     private Node<K, V> getPrevNode(int hashOutside, Object keyOutside)
@@ -157,4 +166,50 @@ class Bucket<K, V>
         this.head = node;
     }
 
+    protected static class Node<K, V>
+    {
+        private int hash;
+        private K key;
+        private V value;
+        private Node<K, V> next;
+
+
+        private Node(int hash, K key, V value, Node<K, V> next)
+        {
+            this.hash = hash;
+            this.key = key;
+            this.value = value;
+            this.next = next;
+        }
+
+        protected int getHash()
+        {
+            return hash;
+        }
+
+        protected K getKey()
+        {
+            return key;
+        }
+
+        protected V getValue()
+        {
+            return value;
+        }
+
+        protected Node<K, V> getNext()
+        {
+            return next;
+        }
+
+        private void setValue(V value)
+        {
+            this.value = value;
+        }
+
+        private void setNext(Node<K, V> next)
+        {
+            this.next = next;
+        }
+    }
 }
